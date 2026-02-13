@@ -1361,7 +1361,7 @@ function buildRecap() {
     html += '<div class="recap-row"><span class="recap-label">Délai souhaité</span><span class="recap-value">' + formData.timeline + '</span></div>';
   }
   if (formData.notes) {
-    html += '<div class="recap-row"><span class="recap-label">Précisions</span><span class="recap-value">' + formData.notes + '</span></div>';
+    html += '<div class="recap-row"><span class="recap-label">Précisions</span><span class="recap-value">' + (formData.notes ? 'Oui' : 'Non') + '</span></div>';
   }
   html += '</div>';
 
