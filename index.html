@@ -34,7 +34,7 @@
   body {
     font-family: 'Open Sans', sans-serif;
     color: var(--text);
-    background: var(--off-white);
+    
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
   }
@@ -1406,7 +1406,7 @@ function submitForm() {
     _subject: 'Nouvelle demande de devis — ' + formData.services.join(', ')
   };
 
-  fetch('https://formspree.io/f/VOTRE_ID_FORMSPREE', {
+  fetch('https://formspree.io/f/maqdegrp', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify(body)
