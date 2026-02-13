@@ -1470,6 +1470,20 @@ function goToStep(step) {
   // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Auto-resize iframe
+function notifyParent() {
+  var height = document.body.scrollHeight;
+  window.parent.postMessage({ type: 'resize', height: height }, '*');
+}
+window.addEventListener('load', notifyParent);
+window.addEventListener('resize', notifyParent);
+new MutationObserver(notifyParent).observe(document.body, {
+  childList: true, subtree: true, attributes: true
+});
+// Aussi notifier quand on tape du texte
+document.addEventListener('input', notifyParent);
+
 </script>
 
 </body>
