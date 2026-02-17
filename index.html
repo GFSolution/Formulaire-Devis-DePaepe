@@ -497,76 +497,6 @@
 
   .phone-field::placeholder { color: var(--gray-400); }
 
-  /* Upload zone */
-  .upload-zone {
-    border: 2px dashed var(--gray-300);
-    border-radius: var(--radius);
-    padding: 28px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.25s;
-    background: var(--off-white);
-  }
-
-  .upload-zone:hover {
-    border-color: var(--green);
-    background: var(--green-light);
-  }
-
-  .upload-zone svg {
-    width: 36px;
-    height: 36px;
-    color: var(--gray-400);
-    margin-bottom: 8px;
-  }
-
-  .upload-zone:hover svg { color: var(--green); }
-
-  .upload-text {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--gray-600);
-  }
-
-  .upload-text span { color: var(--orange); text-decoration: underline; }
-
-  .upload-hint {
-    font-size: 11px;
-    color: var(--gray-400);
-    margin-top: 4px;
-  }
-
-  .upload-files-list {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .upload-file-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--green-light);
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    color: var(--green);
-    font-weight: 500;
-  }
-
-  .upload-file-remove {
-    cursor: pointer;
-    color: var(--gray-400);
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-
-  .upload-file-remove:hover { color: #D32F2F; }
-
   /* ===== STEP 4: Confirmation ===== */
   .recap-container {
     display: flex;
@@ -1079,17 +1009,6 @@
           </span>
         </div>
 
-        <div class="input-group full">
-          <label class="input-label">Photos du terrain (facultatif)</label>
-          <div class="upload-zone" id="uploadZone">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-            <div class="upload-text"><span>Cliquez pour ajouter</span> ou glissez vos photos</div>
-            <div class="upload-hint">JPG, PNG — 10 Mo max par fichier</div>
-          </div>
-          <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
-          <div class="upload-files-list" id="filesList"></div>
-        </div>
-
       </div>
 
       <div class="form-nav">
@@ -1230,60 +1149,6 @@ rangeInput.addEventListener('input', function() {
   rangeDisplay.innerHTML = val >= 1000 ? '1000+ <span>m²</span>' : val + ' <span>m²</span>';
 });
 
-// ===== FILE UPLOAD =====
-var uploadZone = document.getElementById('uploadZone');
-var fileInput = document.getElementById('fileInput');
-var filesList = document.getElementById('filesList');
-var uploadedFiles = [];
-
-uploadZone.addEventListener('click', function() { fileInput.click(); });
-
-uploadZone.addEventListener('dragover', function(e) {
-  e.preventDefault();
-  this.style.borderColor = '#2D5A3D';
-  this.style.background = '#E8F0EB';
-});
-
-uploadZone.addEventListener('dragleave', function() {
-  this.style.borderColor = '';
-  this.style.background = '';
-});
-
-uploadZone.addEventListener('drop', function(e) {
-  e.preventDefault();
-  this.style.borderColor = '';
-  this.style.background = '';
-  handleFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener('change', function() {
-  handleFiles(this.files);
-});
-
-function handleFiles(files) {
-  Array.from(files).forEach(function(file) {
-    if (file.size > 10 * 1024 * 1024) return;
-    uploadedFiles.push(file);
-  });
-  renderFilesList();
-}
-
-function renderFilesList() {
-  filesList.innerHTML = '';
-  uploadedFiles.forEach(function(file, i) {
-    var item = document.createElement('div');
-    item.className = 'upload-file-item';
-    item.innerHTML = '<span>' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' Mo)</span><span class="upload-file-remove" data-index="' + i + '">&times;</span>';
-    filesList.appendChild(item);
-  });
-  filesList.querySelectorAll('.upload-file-remove').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      uploadedFiles.splice(parseInt(this.getAttribute('data-index')), 1);
-      renderFilesList();
-    });
-  });
-}
-
 // ===== VALIDATION (Step 3) =====
 function validateAndGoStep4() {
   var valid = true;
@@ -1371,9 +1236,6 @@ function buildRecap() {
   html += '<div class="recap-row"><span class="recap-label">Email</span><span class="recap-value">' + formData.email + '</span></div>';
   html += '<div class="recap-row"><span class="recap-label">Téléphone</span><span class="recap-value">+33 ' + formData.phone + '</span></div>';
   html += '<div class="recap-row"><span class="recap-label">Commune</span><span class="recap-value">' + formData.city + '</span></div>';
-  if (uploadedFiles.length > 0) {
-    html += '<div class="recap-row"><span class="recap-label">Photos</span><span class="recap-value">' + uploadedFiles.length + ' fichier(s)</span></div>';
-  }
   html += '</div>';
 
   document.getElementById('recapContainer').innerHTML = html;
@@ -1402,7 +1264,6 @@ function submitForm() {
     email: formData.email,
     telephone: '+33 ' + formData.phone,
     commune: formData.city,
-    photos: uploadedFiles.length + ' fichier(s) joint(s)',
     _subject: 'Nouvelle demande de devis — ' + formData.services.join(', ')
   };
 
